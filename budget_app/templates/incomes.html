@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="h3 mb-4 text-gray-800">Incomes</h1>
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+{% endif %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Add Income</h6>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.amount.label }} {{ form.amount }}
+            </div>
+            <div class="form-group">
+                {{ form.description.label }} {{ form.description }}
+            </div>
+            <div class="form-group">
+                <label>Select category</label>
+                {{ form.category }}
+            </div>
+            <div class="form-group">
+                <label>Create new category</label>
+                {{ form.new_category }}
+            </div>
+            <div class="form-group">
+                {{ form.date.label }} {{ form.date }}
+            </div>
+            <button type="submit" class="btn btn-primary">Add Income</button>
+            <a href="{% url 'budget_app:index' %}" class="btn btn-secondary">Back to Dashboard</a>
+        </form>
+    </div>
+</div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Existing Incomes</h6>
+    </div>
+    <div class="card-body">
+        {% if incomes %}
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Amount</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th>Date</th>
+                            <th style="width: 80px;">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for income in incomes %}
+                        <tr>
+                            <td>{{ income.amount }}</td>
+                            <td>{{ income.description }}</td>
+                            <td>{{ income.category.name }}</td>
+                            <td>{{ income.date }}</td>
+                            <td>
+                                <a href="{% url 'budget_app:delete_income' income.id %}" 
+                                   class="btn btn-danger btn-sm">
+                                    Delete
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p>No incomes yet. Add one above.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

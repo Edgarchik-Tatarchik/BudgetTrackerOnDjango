@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="py-3 py-md-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-9 col-xl-8 col-xxl-7">
+        <div class="card widget-card border-light shadow-sm">
+          <div class="card-body p-4">
+            <div class="d-block d-sm-flex align-items-center justify-content-between mb-3">
+              <div class="mb-3 mb-sm-0">
+                <h5 class="card-title widget-card-title">Revenue & Expenses History</h5>
+              </div>
+              <div>
+                <select id="timeRange" class="form-select text-secondary border-light-subtle">
+                  <option value="month">Month</option>
+                  <option value="week">Week</option>
+                  <option value="day" selected>Day</option>
+                </select>
+              </div>
+            </div>
+            <div id="revenueChart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<script>
+const incomes = JSON.parse('{{ incomes|escapejs }}');
+const expenses = JSON.parse('{{ expenses|escapejs }}');
+
+function groupByPeriod(data, period) {
+    const grouped = {};
+
+    data.forEach(item => {
+        const date = new Date(item.date);
+
+        let key;
+        if (period === 'day') {
+            key = item.date; // YYYY-MM-DD
+        } else if (period === 'week') {
+            const firstDayOfYear = new Date(date.getFullYear(),0,1);
+            const pastDaysOfYear = (date - firstDayOfYear)/(24*60*60*1000);
+            const weekNum = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay()+1)/7);
+            key = `${date.getFullYear()}-W${weekNum}`;
+        } else if (period === 'month') {
+            key = `${date.getFullYear()}-${('0'+(date.getMonth()+1)).slice(-2)}`;
+        }
+        
+        if(!grouped[key]) grouped[key] = 0;
+        grouped[key] += parseFloat(item.amount);
+    });
+
+    return grouped;
+}
+
+function updateChart(period) {
+    const incomeMap = groupByPeriod(incomes, period);
+    const expenseMap = groupByPeriod(expenses, period);
+
+    const allLabels = [...Object.keys(incomeMap), ...Object.keys(expenseMap)];
+    const labels = [...new Set(allLabels)].sort();
+
+    chart.updateOptions({
+        xaxis: { categories: labels },
+        series: [
+            { name: 'Income', data: labels.map(d => incomeMap[d] || 0) },
+            { name: 'Expense', data: labels.map(d => expenseMap[d] || 0) }
+        ]
+    });
+}
+
+
+const options = {
+    chart: { type: 'line', height: 350 },
+    series: [{ name: 'Income', data: [] }, { name: 'Expense', data: [] }],
+    xaxis: { categories: [] },
+    colors: ['#28a745','#dc3545'],
+    stroke: { curve: 'smooth' },
+    markers: { size: 4 },
+    tooltip: { shared: true, intersect: false }
+};
+
+const chart = new ApexCharts(document.querySelector("#revenueChart"), options);
+chart.render();
+
+
+updateChart('week');
+
+document.getElementById('timeRange').addEventListener('change', e => {
+    updateChart(e.target.value);
+});
+</script>
+{% endblock %}

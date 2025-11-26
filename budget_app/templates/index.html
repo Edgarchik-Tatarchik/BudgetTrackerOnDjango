@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
+
+<div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-success">Incomes</h6>
+                <small>Total: ¥{{ total_income }}</small>
+            </div>
+            <div class="card-body">
+                {% if income_progress %}
+                    {% for item in income_progress %}
+                        <h5 class="small font-weight-bold">{{ item.category }}
+                            <span class="float-right">¥{{ item.sum }} ({{ item.percent }}%)</span>
+                        </h5>
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-success" role="progressbar"
+                                 style="width: {{ item.percent }}%" 
+                                 aria-valuenow="{{ item.percent }}" aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No incomes yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-danger">Expenses</h6>
+                <small>Total: ¥{{ total_expense }}</small>
+            </div>
+            <div class="card-body">
+                {% if expense_progress %}
+                    {% for item in expense_progress %}
+                        <h5 class="small font-weight-bold">{{ item.category }}
+                            <span class="float-right">¥{{ item.sum }} ({{ item.percent }}%)</span>
+                        </h5>
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-danger" role="progressbar"
+                                 style="width: {{ item.percent }}%" 
+                                 aria-valuenow="{{ item.percent }}" aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No expenses yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {% for goal in goals_data %}
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">{{ goal.title }}</h6>
+                <small>Target: ¥{{ goal.target }}</small>
+            </div>
+            <div class="card-body">
+                <div class="chart-pie pt-4 pb-2">
+                    <canvas id="goal-pie-{{ goal.id }}"></canvas>
+                </div>
+                <div class="mt-4 text-center small">
+                <span class="mr-2">
+                    <i class="fas fa-circle text-primary"></i> Progress: {{ goal.progress_percent }}%
+                </span>
+                <span class="mr-2">
+                    <i class="fas fa-circle text-secondary"></i> Remaining: {{ goal.remaining_percent }}%
+                </span>
+            </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    {% for goal in goals_data %}
+    var ctx{{ goal.id }} = document.getElementById('goal-pie-{{ goal.id }}').getContext('2d');
+    var progress{{ goal.id }} = {{ goal.current }};
+    var remaining{{ goal.id }} = {{ goal.target }} - progress{{ goal.id }};
+    if (remaining{{ goal.id }} < 0) remaining{{ goal.id }} = 0;
+
+    new Chart(ctx{{ goal.id }}, {
+        type: 'doughnut',
+        data: {
+            labels: ['Progress', 'Remaining'],
+            datasets: [{
+                data: [progress{{ goal.id }}, remaining{{ goal.id }}],
+                backgroundColor: ['rgba(78, 115, 223, 1)', 'rgba(200, 200, 200, 0.3)'],
+                hoverBackgroundColor: ['rgba(78, 115, 223, 0.8)', 'rgba(200, 200, 200, 0.5)'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': ¥' + context.parsed;
+                        }
+                    }
+                }
+            }
+        }
+    });
+    {% endfor %}
+});
+</script>
+{% endblock %}
