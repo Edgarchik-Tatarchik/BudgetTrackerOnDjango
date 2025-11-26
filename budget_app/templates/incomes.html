@@ -23,18 +23,24 @@
                 {{ form.amount.label }} {{ form.amount }}
             </div>
             <div class="form-group">
-                {{ form.description.label }} {{ form.description }}
+                {{ form.description.label }}
+                {{ form.description }}
             </div>
+
+            {% if categories %}
+                <div class="form-group">
+                    <label for="{{ form.category.id_for_label }}">Select Category</label>
+                    {{ form.category }}
+                </div>
+            {% endif %}
+
             <div class="form-group">
-                <label>Select category</label>
-                {{ form.category }}
-            </div>
-            <div class="form-group">
-                <label>Create new category</label>
+                <label for="{{ form.new_category.id_for_label }}">Create New Category</label>
                 {{ form.new_category }}
             </div>
             <div class="form-group">
-                {{ form.date.label }} {{ form.date }}
+                {{ form.date.label }}
+                {{ form.date }}
             </div>
             <button type="submit" class="btn btn-primary">Add Income</button>
             <a href="{% url 'budget_app:index' %}" class="btn btn-secondary">Back to Dashboard</a>
