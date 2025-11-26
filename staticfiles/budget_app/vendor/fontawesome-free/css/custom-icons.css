@@ -1,0 +1,30 @@
+.fa-plus:before {
+    content: "\2b";               
+    font-family: "Classic";  
+    font-weight: 900;     
+    font-size: 20px;          
+}
+.fa-wallet::before{
+    content: "\f555";               
+    font-family: "Font Awesome 5 Free";  
+    font-weight: 900;     
+    font-size: 40px;
+}
+.fa-circle-info:before{
+    content: "\f05a";               
+    font-family: "Font Awesome 5 Free";  
+    font-weight: 900;     
+    font-size: 15px;
+}
+.fa-user-gear:before{
+    content: "\f4fe";               
+    font-family: "Font Awesome 5 Free";  
+    font-weight: 900;     
+    font-size: 15px;
+}
+.fa-calculator:before{
+    content: "\f1ec";               
+    font-family: "Font Awesome 5 Free";  
+    font-weight: 900;     
+    font-size: 15px;
+}

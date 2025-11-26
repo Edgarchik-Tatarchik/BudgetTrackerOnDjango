@@ -106,6 +106,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [
+    BASE_DIR / 'budget_app' / 'static',
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -116,4 +119,4 @@ LOGIN_URL = 'budget_app:login'
 LOGIN_REDIRECT_URL = 'budget_app:index'
 LOGOUT_REDIRECT_URL = '/' 
 AUTH_USER_MODEL = 'budget_app.CustomUser'
-ALLOWED_HOSTS = ['EdgarchikTatarchick2005.pythonanywhere.com']
+ALLOWED_HOSTS = ['EdgarchikTatarchick2005.pythonanywhere.com',"127.0.0.1"]

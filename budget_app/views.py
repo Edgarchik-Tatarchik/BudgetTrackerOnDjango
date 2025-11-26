@@ -60,9 +60,8 @@ def password_change_view(request):
 
     return render(request, 'password_change.html', {'form': form, 'message': message})
 
-
 def incomes_view(request):
-    categories = IncomeCategory.objects.all()
+    categories = IncomeCategory.objects.filter(user=request.user)
     message = ''
 
     if request.method == 'POST':
@@ -73,10 +72,11 @@ def incomes_view(request):
             new_category_name = form.cleaned_data.get("new_category")
 
             if new_category_name:
-                selected_category, created = IncomeCategory.objects.get_or_create(name=new_category_name)
+                selected_category, created = IncomeCategory.objects.get_or_create(name=new_category_name,user=request.user)
 
             income = form.save(commit=False)
             income.category = selected_category
+            income.user = request.user
             income.save()
 
             messages.success(request, "Income added successfully!")
@@ -85,8 +85,7 @@ def incomes_view(request):
     else:
         form = IncomeForm()
 
-    incomes = Income.objects.all().order_by("-date")
-
+    incomes = Income.objects.filter(user=request.user).order_by("-date")
     return render(request, 'incomes.html', {
         'form': form,
         "incomes": incomes,
@@ -102,7 +101,7 @@ def delete_income(request, income_id):
 
 
 def expenses_view(request):
-    categories = ExpenseCategory.objects.all()
+    categories = ExpenseCategory.objects.filter(user=request.user)
     message = ''
 
     if request.method == 'POST':
@@ -113,10 +112,11 @@ def expenses_view(request):
             new_category_name = form.cleaned_data.get("new_category")
 
             if new_category_name:
-                selected_category, created = ExpenseCategory.objects.get_or_create(name=new_category_name)
+                selected_category, created = ExpenseCategory.objects.get_or_create(name=new_category_name, user=request.user)
 
             expense = form.save(commit=False)
             expense.category = selected_category
+            expense.user = request.user
             expense.save()
 
             messages.success(request, "Expense added successfully!")
@@ -125,8 +125,8 @@ def expenses_view(request):
     else:
         form = ExpenseForm()
 
-    expenses = Expense.objects.all().order_by("-date")
-
+    
+    expenses = Expense.objects.filter(user=request.user).order_by("-date")
     return render(request, 'expenses.html', {
         'form': form,
         "expenses": expenses,
@@ -144,15 +144,16 @@ def delete_expense(request, expense_id):
 @login_required
 def HomepageView(request):
 
-    income_categories = IncomeCategory.objects.all().order_by('name')
-    expense_categories = ExpenseCategory.objects.all().order_by('name')
+    income_categories = IncomeCategory.objects.filter(user=request.user)
+    expense_categories = ExpenseCategory.objects.filter(user=request.user)
 
-    incomes = Income.objects.all()
-    expenses = Expense.objects.all()
+    incomes = Income.objects.filter(user=request.user)
+    expenses = Expense.objects.filter(user=request.user)
 
 
     total_income = incomes.aggregate(total=Sum('amount'))['total'] or 0
-
+    total_expense = expenses.aggregate(total=Sum('amount'))['total'] or 0
+    
     income_progress = []
     for category in income_categories:
         category_sum = incomes.filter(category=category).aggregate(total=Sum('amount'))['total'] or 0
@@ -163,7 +164,7 @@ def HomepageView(request):
             'sum': category_sum
         })
 
-    total_expense = expenses.aggregate(total=Sum('amount'))['total'] or 0
+    
 
     expense_progress = []
     for category in expense_categories:
@@ -175,9 +176,8 @@ def HomepageView(request):
             'sum': category_sum
         })
         
-    goals = Goal.objects.all()
+    goals = Goal.objects.filter(user=request.user)
     goals_data = []
-    total_income = Income.objects.aggregate(total=Sum('amount'))['total'] or 0
     for goal in goals:
         current_amount = Income.objects.aggregate(total=Sum('amount'))['total'] or 0
         progress_percent = min(round(current_amount / goal.target_amount * 100, 2), 100)
@@ -206,13 +206,15 @@ def HomepageView(request):
     return render(request, "index.html", context)
 
 def goals_view(request):
-    goals = Goal.objects.all().order_by('id')
+    goals = Goal.objects.filter(user=request.user).order_by('id')
 
     if request.method == "POST":
         if "add_goal" in request.POST:
             form = GoalForm(request.POST)
             if form.is_valid():
-                form.save()
+                goal = form.save(commit=False)
+                goal.user = request.user
+                goal.save()
                 messages.success(request, "Goal added successfully!")
                 return redirect('budget_app:goals')
         elif "complete_goal" in request.POST:
@@ -236,8 +238,8 @@ def complete_goal(request, goal_id):
     return redirect('budget_app:goals')
 
 def revenue_view(request):
-    incomes_qs = Income.objects.all().order_by('date')
-    expenses_qs = Expense.objects.all().order_by('date')
+    incomes_qs = Income.objects.filter(user=request.user).order_by('date')
+    expenses_qs = Expense.objects.filter(user=request.user).order_by('date')
 
     incomes = list(incomes_qs.values('date', 'amount'))
     expenses = list(expenses_qs.values('date', 'amount'))
