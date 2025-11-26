@@ -1,0 +1,19 @@
+# Виртуальное окружение
+budgetenv/
+
+# База данных
+*.sqlite3
+
+# Кэш Python
+__pycache__/
+*.py[cod]
+
+# Статические файлы (если используешь collectstatic)
+staticfiles/
+
+# Логи
+*.log
+
+# Секретные файлы
+.env
+
