@@ -28,3 +28,15 @@
     font-weight: 900;     
     font-size: 15px;
 }
+.fa-paper-plane:before{
+    content: "\f1d8";               
+    font-family: "Font Awesome 5 Free";  
+    font-weight: 900;     
+    font-size: 15px;
+}
+.fa-envelope-open-text:before{
+    content: "\f658";               
+    font-family: "Font Awesome 5 Free";  
+    font-weight: 900;     
+    font-size: 15px;
+}

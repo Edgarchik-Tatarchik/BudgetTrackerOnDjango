@@ -14,7 +14,6 @@ SECRET_KEY = 'django-insecure-*v$kh5^-z4nvzmfr!cp(0&jry5zos+a9a+5y5-^h191k#)6l1)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 
 
@@ -119,4 +118,13 @@ LOGIN_URL = 'budget_app:login'
 LOGIN_REDIRECT_URL = 'budget_app:index'
 LOGOUT_REDIRECT_URL = '/' 
 AUTH_USER_MODEL = 'budget_app.CustomUser'
-ALLOWED_HOSTS = ['EdgarchikTatarchick2005.pythonanywhere.com',"127.0.0.1"]
+ALLOWED_HOSTS = ['EdgarchikTatarchick2005.pythonanywhere.com',"127.0.0.1",'localhost']
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = "atsw332@gmail.com"         
+EMAIL_HOST_PASSWORD = "lmeu xire rbrw hnmo"         
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

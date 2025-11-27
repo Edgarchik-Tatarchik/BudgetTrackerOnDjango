@@ -90,3 +90,8 @@ class GoalForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'target_amount': forms.NumberInput(attrs={'class': 'form-control'}),
         }
+    
+class ContactForm(forms.Form):
+    email = forms.EmailField(label="Your email")
+    name = forms.CharField(label="Name", max_length=100)
+    message = forms.CharField(label="Message", widget=forms.Textarea)

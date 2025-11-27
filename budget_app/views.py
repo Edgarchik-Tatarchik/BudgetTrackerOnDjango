@@ -6,11 +6,14 @@ from django.contrib.auth import login
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView
-from .forms import RegisterForm, LoginForm, IncomeForm, ExpenseForm, GoalForm
+from .forms import RegisterForm, LoginForm, IncomeForm, ExpenseForm, GoalForm, ContactForm
+from django.core.mail import send_mail
 from django.db.models import Sum
 from django.contrib import messages
 import json
 from django.core.serializers.json import DjangoJSONEncoder
+from django.conf import settings
+
 
 
 
@@ -252,3 +255,28 @@ def revenue_view(request):
 
 def calculator_view(request):
     return render(request, 'calculator.html')
+
+def contact_view(request):
+    sent = False
+
+    if request.method == "POST":
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data["name"]
+            user_email = form.cleaned_data["email"]
+            message = form.cleaned_data["message"]
+
+            subject = f"(BudgetTracker)New message from {name}"
+
+            full_message = f"Name: {name}\nEmail: {user_email}\n\nMessage:\n{message}"
+
+            send_mail(
+                subject=subject,
+                message=full_message,
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[settings.EMAIL_HOST_USER],
+            )
+
+            sent = True
+
+    return render(request, "contact.html", {"sent": sent})

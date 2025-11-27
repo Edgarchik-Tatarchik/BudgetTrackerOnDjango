@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     HomepageView, SignUpView, CustomLoginView, CustomLogoutView, complete_goal,
     password_change_view,incomes_view, expenses_view,goals_view,revenue_view,
-    calculator_view,delete_income,delete_expense
+    calculator_view,contact_view, delete_income,delete_expense
 )
 
 app_name = 'budget_app'
@@ -21,4 +21,5 @@ urlpatterns = [
     path('goals/complete/<int:goal_id>/', complete_goal, name='complete_goal'),
     path('revenue/', revenue_view, name='revenue'),
     path('calculator/', calculator_view, name='calculator'),
+    path("contact/", contact_view, name="contact"),
 ]
