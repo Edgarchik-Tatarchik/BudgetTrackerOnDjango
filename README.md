@@ -95,37 +95,37 @@ python manage.py runserver
 🧭 Usage
 1) 収入・支出を追加する
 
-左メニュー → Add new item を開く
+・左メニュー → Add new item を開く
 
-Income（収入）または Expense（支出）を選択
+・Income（収入）または Expense（支出）を選択
 
-カテゴリ（例：Salary / food / shopping）と金額を入力して保存する
+・カテゴリ（例：Salary / food / shopping）と金額を入力して保存する
 
 2) ダッシュボードで統計を見る
 
-Dashboard では以下を確認できます：
+・Dashboard では以下を確認できます：
 
-Incomes / Expenses：合計金額とカテゴリ別の内訳
+・Incomes / Expenses：合計金額とカテゴリ別の内訳
 
-グラフ表示、および目標（例：「New PC」）の進捗
+・グラフ表示、および目標（例：「New PC」）の進捗
 
-新しいデータを追加すると、表示が自動的に更新されます
+・新しいデータを追加すると、表示が自動的に更新されます
 
 3) 目標を作成し、進捗を確認する
 
-Progress を開く
+・Progress を開く
 
-目標（名称 + target）を作成する
+・目標（名称 + target）を作成する
 
-円グラフで Progress / Remaining を確認する
+・円グラフで Progress / Remaining を確認する
 
 4) その他のページ
 
-Budget info：予算の概要／現在の金額（※実装されている場合）
+・Budget info：予算の概要／現在の金額（※実装されている場合）
 
-Calculator：簡単な計算
+・Calculator：簡単な計算
 
-Account：ユーザーとしてログイン／プロフィール（※実装されている場合）
+・Account：ユーザーとしてログイン／プロフィール（※実装されている場合）
 
 
 🛠️ Admin（データ管理）
